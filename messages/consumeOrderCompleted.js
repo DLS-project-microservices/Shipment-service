@@ -1,15 +1,15 @@
-import connectToRabbitMQ from './connection.js';
-import {publishShipmentSent} from './publishShipmentSent.js'
+import { connectToRabbitMQ } from 'amqplib-retry-wrapper-dls';
+import { publishShipmentSent } from './publishShipmentSent.js'
+
+const channel = await connectToRabbitMQ(process.env.AMQP_HOST);
 
 async function consumeOrderCompleted(){
+    const exchangeName = 'order_direct';
+    const queueName = 'shipment_service_consume_order_completed';
+    const routingKey = 'order completed';
+    const exchangeType = 'direct';
+    
     try{
-        const connection = await connectToRabbitMQ();
-        const channel = await connection.createChannel();
-        const exchangeName = 'order_direct';
-        const queueName = 'shipment_service_consume_order_completed';
-        const routingKey = 'order completed';
-        const exchangeType = 'direct';
-
         await channel.assertExchange(exchangeName, exchangeType, {
             durable: true
         });
@@ -40,4 +40,4 @@ async function consumeOrderCompleted(){
     }
 }
 
-export  {consumeOrderCompleted};
+export { consumeOrderCompleted };
