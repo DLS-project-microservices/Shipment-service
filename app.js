@@ -1,8 +1,10 @@
+import 'dotenv/config';
 import {consumeOrderCompleted} from './messages/consumeOrderCompleted.js'
-import { publishShipmentFailed } from './messages/publishShipmentFailed.js';
-import express from 'express';
-
-
-const app = express();
+import {publishShipmentFailed} from './messages/publishShipmentFailed.js';
+import { publishShipmentSent } from './messages/publishShipmentSent.js';
 
 await consumeOrderCompleted();
+
+await publishShipmentSent('sent-test');
+
+await publishShipmentFailed('fail-test');
