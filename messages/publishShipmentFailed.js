@@ -4,7 +4,7 @@ const channel = await connectToRabbitMQ(process.env.AMQP_HOST);
 
 async function publishShipmentFailed(message) {
     const exchangeName = 'order_direct';
-    const exchangeType = 'fanout';
+    const exchangeType = 'direct';
     const routingKey = 'shipment_sent_failed'
     
     try {
