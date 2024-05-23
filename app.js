@@ -4,7 +4,3 @@ import {publishShipmentFailed} from './messages/publishShipmentFailed.js';
 import { publishShipmentSent } from './messages/publishShipmentSent.js';
 
 await consumeOrderCompleted();
-
-await publishShipmentSent('sent-test');
-
-await publishShipmentFailed('fail-test');
