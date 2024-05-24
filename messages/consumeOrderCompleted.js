@@ -32,7 +32,12 @@ async function consumeOrderCompleted(){
                 }
 
             } catch(error){
-                await publishShipmentFailed(messageContent);
+                if (msg !== null) {
+                    const messageContent = JSON.parse(msg.content.toString());
+                    await publishShipmentFailed(messageContent);
+                    
+                    channel.nack(msg);
+                }
                 console.error('Error processing order_completed:', error);
             }
         })
