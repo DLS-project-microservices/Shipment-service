@@ -1,5 +1,6 @@
 import { connectToRabbitMQ } from 'amqplib-retry-wrapper-dls';
 import { publishShipmentSent } from './publishShipmentSent.js'
+import { publishShipmentFailed } from './publishShipmentFailed.js';
 
 const channel = await connectToRabbitMQ(process.env.AMQP_HOST);
 
@@ -31,6 +32,12 @@ async function consumeOrderCompleted(){
                 }
 
             } catch(error){
+                if (msg !== null) {
+                    const messageContent = JSON.parse(msg.content.toString());
+                    await publishShipmentFailed(messageContent);
+                    
+                    channel.nack(msg);
+                }
                 console.error('Error processing order_completed:', error);
             }
         })
