@@ -1,16 +1,14 @@
-import { connectToRabbitMQ } from 'amqplib-retry-wrapper-dls';
+import channel from './connection.js';
 
-const channel = await connectToRabbitMQ(process.env.AMQP_HOST);
+const exchangeName = 'shipment_fanout';
+const exchangeType = 'fanout';
+
+await channel.assertExchange(exchangeName, exchangeType, {
+    durable: true
+});
 
 async function publishShipmentSent(message) {
-    const exchangeName = 'shipment_fanout';
-    const exchangeType = 'fanout';
-    
     try{
-        await channel.assertExchange(exchangeName, exchangeType, {
-            durable: true
-        });
-
         channel.publish(exchangeName, '', Buffer.from(JSON.stringify(message)));
         console.log('shipment_sent message published successfully');
     } catch(error){
